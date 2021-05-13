@@ -12,6 +12,10 @@ function zip(...arrays) {
   });
 }
 
+function mean(arrays) {
+  return arrays.reduce((p, c) => p + c, 0) / arrays.length;
+}
+
 /**
  * @typedef {object} Props
  * @property {ArrayBuffer} soundData
@@ -38,11 +42,11 @@ const SoundWaveSVG = ({ soundData }) => {
     const rightData = map(buffer.getChannelData(1), Math.abs);
 
     // 左右の音声データの平均を取る
-    const normalized = map(zip(leftData, rightData), _.mean);
+    const normalized = map(zip(leftData, rightData), mean);
     // 100 個の chunk に分ける
     const chunks = _.chunk(normalized, Math.ceil(normalized.length / 100));
     // chunk ごとに平均を取る
-    const peaks = map(chunks, _.mean);
+    const peaks = map(chunks, mean);
     // chunk の平均の中から最大値を取る
     const max = _.max(peaks);
 
