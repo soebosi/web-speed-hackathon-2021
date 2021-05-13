@@ -5,6 +5,13 @@ function map(list, func) {
   return list.map(func);
 }
 
+function zip(...arrays) {
+  const maxLength = Math.max(...arrays.map(x => x.length));
+  return Array.from({ length: maxLength }).map((_, i) => {
+    return Array.from({ length: arrays.length }, (_, k) => arrays[k][i]);
+  });
+}
+
 /**
  * @typedef {object} Props
  * @property {ArrayBuffer} soundData
@@ -31,7 +38,7 @@ const SoundWaveSVG = ({ soundData }) => {
     const rightData = map(buffer.getChannelData(1), Math.abs);
 
     // 左右の音声データの平均を取る
-    const normalized = map(_.zip(leftData, rightData), _.mean);
+    const normalized = map(zip(leftData, rightData), _.mean);
     // 100 個の chunk に分ける
     const chunks = _.chunk(normalized, Math.ceil(normalized.length / 100));
     // chunk ごとに平均を取る
