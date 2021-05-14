@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 
 function map(list, func) {
@@ -6,14 +5,22 @@ function map(list, func) {
 }
 
 function zip(...arrays) {
-  const maxLength = Math.max(...arrays.map(x => x.length));
+  const maxLength = Math.max(...arrays.map((x) => x.length));
   return Array.from({ length: maxLength }).map((_, i) => {
     return Array.from({ length: arrays.length }, (_, k) => arrays[k][i]);
   });
 }
 
-function mean(arrays) {
-  return arrays.reduce((p, c) => p + c, 0) / arrays.length;
+function mean(array) {
+  return array.reduce((p, c) => p + c, 0) / array.length;
+}
+
+function _max(arr) {
+  return Math.max(...arr);
+}
+
+function chunk(arr, size) {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_v, i) => arr.slice(i * size, i * size + size));
 }
 
 /**
@@ -44,11 +51,11 @@ const SoundWaveSVG = ({ soundData }) => {
     // 左右の音声データの平均を取る
     const normalized = map(zip(leftData, rightData), mean);
     // 100 個の chunk に分ける
-    const chunks = _.chunk(normalized, Math.ceil(normalized.length / 100));
+    const chunks = chunk(normalized, Math.ceil(normalized.length / 100));
     // chunk ごとに平均を取る
     const peaks = map(chunks, mean);
     // chunk の平均の中から最大値を取る
-    const max = _.max(peaks);
+    const max = _max(peaks);
 
     setPeaks({ max, peaks });
   }, [soundData]);
